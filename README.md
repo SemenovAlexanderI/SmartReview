@@ -42,6 +42,9 @@
 * **Мониторинг**: Prometheus
 * **Оркестрация**: Docker, Docker Compose
 
+
+![Image 1](https://github.com/SemenovAlexanderI/SmartReview/raw/main/Архитектура.png)
+
 ---
 ## Описание ключевых компонентов
 
