@@ -31,8 +31,6 @@
 ---
 ## Архитектура и стек
 
-!скриншот архитектуры 
-
 * **API**: FastAPI
 * **NLP-пайплайн**: Transformers (Hugging Face), NLTK (для токенизации предложений)
 * **RAG-система**: LangChain
@@ -210,12 +208,6 @@ RAG роутит вопрос в один из сценариев (жалобы,
 
 ![Image ask](https://github.com/SemenovAlexanderI/SmartReview/raw/main/PrtSc/asc(rag).png)
 
-#### Примеры запросов (cURL)
-- `####`
-- `####`
-мейби скрины добавить 
-![Image 1](https://github.com/{username}/{repository}/raw/{branch}/{path}/image.png)
-
 ---
 ## Мониторинг и логи
 
@@ -226,8 +218,9 @@ RAG роутит вопрос в один из сценариев (жалобы,
 ---
 ## Тестирование
 Запустите тесты:
+- нужно перейти в окружение проекта и запустить этот код (использовав интропретатор в котором установлена библиотека pytest)
 ```
-pytest tests/
+pytest -v
 ```
 
 Моки для NLP/RAG/Prometheus (чтобы тесты работали без реальных моделей/API).
