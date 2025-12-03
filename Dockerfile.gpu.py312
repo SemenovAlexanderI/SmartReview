@@ -11,31 +11,17 @@ USER root
 # Скопировать requirements, но не устанавливать torch из requirements (если он там есть)
 COPY requirements.txt /app/requirements.txt
 
-# создаём venv (нужны права на /app — обычно есть)
+# создаём venv 
 RUN python -m venv /app/venv \
  && /app/venv/bin/python -m pip install --upgrade pip \
  && /app/venv/bin/pip install --no-cache-dir -r /app/requirements.txt
 
-# Если тебе нужна конкретная версия torch для cu128 / py3.12 и она доступна как nightly:
-# RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
-
+# Копируем всё приложение
 COPY . /app
 
 # сделать venv бинарники первыми в PATH
 ENV PATH="/app/venv/bin:${PATH}"
-
-# # nltk punkt (как у тебя было)
-# RUN python - <<'PY'
-# import nltk
-# nltk.download('punkt', download_dir='/opt/conda/nltk_data')
-# PY
-# ENV NLTK_DATA=/app/venv/nltk_data
-
-# RUN chmod +x /app/entrypoint.sh
-# EXPOSE 8000
-# CMD ["/app/entrypoint.sh"]
-
-# --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+# -------------------------
 ENV NLTK_DATA=/app/nltk_data
 RUN python - <<'PY'
 import nltk

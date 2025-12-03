@@ -3,7 +3,7 @@ services:
   #   build:
   # context: .
   # dockerfile: Dockerfile.gpu.py312  # Укажи твой Dockerfile явно
-    #@build: .  # заменить на image: smartreview:py312-gpu
+    #@build: .  # Альтернативно, можно использовать build
     image: smartreview:py312-gpu
     container_name: smartreview_py312_gpu
     ports:
