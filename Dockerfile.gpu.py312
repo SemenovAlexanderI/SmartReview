@@ -1,0 +1,52 @@
+# Dockerfile.gpu.py312 (вариант: использовать vendor/community образ с py3.12)
+# FROM nvidia/cuopt:latest-cuda12.8-py312
+FROM pytorch/pytorch:2.8.0-cuda12.8-cudnn9-runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+USER root
+
+# Скопировать requirements, но не устанавливать torch из requirements (если он там есть)
+COPY requirements.txt /app/requirements.txt
+
+# создаём venv (нужны права на /app — обычно есть)
+RUN python -m venv /app/venv \
+ && /app/venv/bin/python -m pip install --upgrade pip \
+ && /app/venv/bin/pip install --no-cache-dir -r /app/requirements.txt
+
+# Если тебе нужна конкретная версия torch для cu128 / py3.12 и она доступна как nightly:
+# RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+
+COPY . /app
+
+# сделать venv бинарники первыми в PATH
+ENV PATH="/app/venv/bin:${PATH}"
+
+# # nltk punkt (как у тебя было)
+# RUN python - <<'PY'
+# import nltk
+# nltk.download('punkt', download_dir='/opt/conda/nltk_data')
+# PY
+# ENV NLTK_DATA=/app/venv/nltk_data
+
+# RUN chmod +x /app/entrypoint.sh
+# EXPOSE 8000
+# CMD ["/app/entrypoint.sh"]
+
+# --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+ENV NLTK_DATA=/app/nltk_data
+RUN python - <<'PY'
+import nltk
+import os
+os.makedirs('/app/nltk_data', exist_ok=True)
+nltk.download('punkt', download_dir='/app/nltk_data')
+# Добавляем punkt_tab, который требует новая версия nltk
+nltk.download('punkt_tab', download_dir='/app/nltk_data')
+PY
+# -------------------------
+
+RUN chmod +x /app/entrypoint.sh
+EXPOSE 8000
+CMD ["/app/entrypoint.sh"]

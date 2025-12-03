@@ -1,0 +1,30 @@
+services:
+  smartreview_app:
+  #   build:
+  # context: .
+  # dockerfile: Dockerfile.gpu.py312  # Укажи твой Dockerfile явно
+    #@build: .  # заменить на image: smartreview:py312-gpu
+    image: smartreview:py312-gpu
+    container_name: smartreview_py312_gpu
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - MODEL_DIR=/app/models/sentiment
+      - UVICORN_WORKERS=1
+      - TOKENIZERS_PARALLELISM=false
+      - OMP_NUM_THREADS=2
+      - SUMMARY_DEVICE=0
+    volumes:  # -v
+      - /home/sai/Desktop/smartreview/smartreview/models/sentiment-distilbert_all/checkpoint-337500:/app/models/sentiment:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    # Опционально: tty: true и stdin_open: true для -it (interactive), если нужно в консоли
+    tty: true
+    stdin_open: true
