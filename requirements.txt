@@ -1,0 +1,36 @@
+#python=3.12
+
+langchain_community
+tiktoken
+langchain-openai
+langchain-cohere
+langchainhub
+chromadb
+langchain
+langgraph
+tavily-python
+
+
+# torch
+# torchvision
+transformers[torch]
+accelerate
+# transformers
+numpy
+pandas
+matplotlib
+datasets
+# quiet
+evaluate
+nltk
+sentencepiece
+scikit-learn
+fastapi
+uvicorn[standard]
+pydantic
+pytest
+python-dotenv
+prometheus-client
+# logging #?
+logger
+langchain_qdrant
