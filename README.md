@@ -208,12 +208,20 @@ RAG роутит вопрос в один из сценариев (жалобы,
 
 ![Image ask](https://github.com/SemenovAlexanderI/SmartReview/raw/main/PrtSc/asc(rag).png)
 
+
 ---
 ## Мониторинг и логи
 
 - Логи: JSON-формат (stdout), уровень INFO. Включают latency, ошибки, extra-данные.
 - Метрики: Prometheus на /metrics (requests, errors, latency, GPU usage, summarizer failures).
 - Rate limit: 10 req/min на IP, с Retry-After.
+- Трассировка RAG в LangSmith: Для детального анализа работы RAG (LangChain) включена трассировка. Если вы настроите ключи LangSmith в .env (см. раздел Установка), все вызовы chains и роутера будут логироваться в проекте "SmartReview_Project". В личном кабинете LangSmith вы можете просмотреть трассы: latency по шагам, промпты, ретрив, выводы LLM. Это полезно для отладки и оптимизации (например, увидеть, как роутер выбирает сценарий).
+
+Пример трассы в LangSmith:
+
+![Image langsmith](https://github.com/SemenovAlexanderI/SmartReview/raw/main/PrtSc/langsmith_1.png)
+
+![Image trace_rag](https://github.com/SemenovAlexanderI/SmartReview/raw/main/PrtSc/trace_rag.png)
 
 ---
 ## Тестирование
@@ -269,3 +277,59 @@ pytest -v
 # Запуск скрипта (автоматически определит GPU)
 python train.py
 ```
+### Логи обучения 
+
+```
+# trainer_state.json
+{
+  "best_global_step": 337500,
+  "best_metric": 0.9555999715839818,
+  "best_model_checkpoint": "./models/sentiment-distilbert_all/checkpoint-337500",
+  "epoch": 3.0,
+  "eval_steps": 500,
+  "global_step": 337500,
+  "is_hyper_param_search": false,
+  "is_local_process_zero": true,
+  "is_world_process_zero": true,
+  "log_history": [
+    {
+      "epoch": 0.0017777777777777779,
+      "grad_norm": 10.3468656539917,
+      "learning_rate": 1.9900000000000003e-05,
+      "loss": 0.5415,
+      "step": 200
+    },
+    {...
+
+    {
+      "epoch": 3.0,
+      "eval_accuracy": 0.9556,
+      "eval_f1_macro": 0.9555999715839818,
+      "eval_loss": 0.23346561193466187,
+      "eval_runtime": 121.5512,
+      "eval_samples_per_second": 822.698,
+      "eval_steps_per_second": 51.419,
+      "step": 337500
+    }
+  ],
+  "logging_steps": 200,
+  "max_steps": 337500,
+  "num_input_tokens_seen": 0,
+  "num_train_epochs": 3,
+  "save_steps": 500}
+
+
+```
+
+
+## **Возможные улучшения**
+Проект — пет-проект, так что он уже функционален. Но если развивать:
+
+- Добавить аутентификацию (API keys для эндпоинтов и пользователей).
+- Расширить RAG: Добавить больше коллекций (отели/продукты), улучшить промпты, реализовать полноценного агента.
+- Оптимизация: Кэширование запросов, асинхронный батч в NLP.
+- CI/CD: GitHub Actions для тестов/деплоя.
+- Документация: Добавить примеры датасетов для Qdrant.
+
+## Лицензия
+MIT License. Свободно используйте и модифицируйте!
