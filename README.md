@@ -57,6 +57,7 @@
 - **`entrypoint.sh`**
 - **`docker-compose.yml`**
 - **`reqirements.txt`** 
+- **`models`** - fine-tuning model
 
 ### Требования
 - Python 3.12+
@@ -74,6 +75,7 @@
 * [Docker](https://www.docker.com/get-started)
 * [Docker Compose](https://docs.docker.com/compose/install/)
 * (Опционально) [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) для поддержки GPU.
+* [models/](https://files.sberdisk.ru/s/iiCvuc9QQWwX8lT) обученная модель. Ее нужно будет скачать, разаххивировать и положить в проект.
 
 ### 2. Конфигурация
 Для работы RAG-агента и NLP-моделей необходимы переменные окружения.
@@ -132,19 +134,34 @@ LANGCHAIN_TRACING_V2=true
     2) Запустите контейнер:
 
     Запустите собранный образ, указав путь к вашей обученной модели и необходимые переменные окружения:
+
+
+
+    <details>
+    <summary><strong>⚠️ ВАЖНО: ПУТЬ К МОДЕЛЯМ</strong></summary>
+
+    ### ВАЖНОЕ ПРИМЕЧАНИЕ:
+    Перед запуском необходимо скачать и разместить папку [`models/`](https://files.sberdisk.ru/s/iiCvuc9QQWwX8lT) в вашем проекте,
+    а затем указать **правильный путь** в команде:
+
+    ```bash
+    -v /'ваш_путь_к_проекту'/models/sentiment-distilbert_all/
     ```
-    docker run --rm -it --gpus all \
-        -p 8000:8000 \
-        --env-file .env \
-        -v /home/sai/Desktop/smartreview/smartreview/models/sentiment-distilbert_all/checkpoint-337500:/app/models/sentiment:ro \
-        -e MODEL_DIR=/app/models/sentiment \
-        -e UVICORN_WORKERS=1 \
-        -e TOKENIZERS_PARALLELISM=false \
-        -e OMP_NUM_THREADS=2 \
-        -e SUMMARY_DEVICE=0 \
-        --name smartreview_py312_gpu \
-        smartreview:py312-gpu
-    ```
+    
+
+```
+docker run --rm -it --gpus all \
+    -p 8000:8000 \
+    --env-file .env \
+    -v /home/sai/Desktop/smartreview/smartreview/models/sentiment-distilbert_all/checkpoint-337500:/app/models/sentiment:ro \
+    -e MODEL_DIR=/app/models/sentiment \
+    -e UVICORN_WORKERS=1 \
+    -e TOKENIZERS_PARALLELISM=false \
+    -e OMP_NUM_THREADS=2 \
+    -e SUMMARY_DEVICE=0 \
+    --name smartreview_py312_gpu \
+    smartreview:py312-gpu
+```
 
 
 - Entry point: entrypoint.sh (инициализирует модели и запускает FastAPI - в коде init_models` в lifespan).
