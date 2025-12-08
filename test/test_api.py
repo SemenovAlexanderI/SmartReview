@@ -1,30 +1,5 @@
-# test/test_api.py
 from fastapi.testclient import TestClient
 import app.main as main_app
-
-# def test_health():
-#     client = TestClient(main_app.app)
-#     r = client.get("/health")
-#     assert r.status_code == 200
-#     assert r.json() == {"status": "ok"}
-
-# def test_predict_single():
-#     client = TestClient(main_app.app)
-#     payload = {"text": "great stay", "summary": True}
-#     r = client.post("/predict", json=payload)
-#     assert r.status_code == 200
-#     j = r.json()
-#     assert j["sentiment"] == "positive"
-#     assert j["summary"] == "short"
-
-# def test_predict_batch():
-#     client = TestClient(main_app.app)
-#     payload = {"texts": ["a","b","c"], "summary": False}
-#     r = client.post("/predict_batch", json=payload)
-#     assert r.status_code == 200
-#     data = r.json()
-#     assert "results" in data
-#     assert len(data["results"]) == 3
 
 def test_health(client):
     response = client.get("/health")
